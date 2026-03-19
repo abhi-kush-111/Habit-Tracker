@@ -16,7 +16,7 @@
         };
         const events = ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'];
         events.forEach(e => window.addEventListener(e, loadGTM, { once: true, passive: true }));
-        setTimeout(loadGTM, 8500); // Fallback extended for PageSpeed
+        setTimeout(loadGTM, 3000); // 3-second fallback for better tracking
       });
     </script>
     <!-- End Google Tag Manager -->
