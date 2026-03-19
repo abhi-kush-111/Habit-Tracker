@@ -1,6 +1,6 @@
 import React, { useState, useEffect, lazy, Suspense, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, X, ChevronLeft, ChevronRight, CheckCircle, Quote, Lock, ShieldCheck, Star, ArrowRight } from 'lucide-react';
+import { Plus, X, ChevronLeft, ChevronRight, CheckCircle, Quote, Lock, ShieldCheck, Star, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 declare global {
@@ -23,7 +23,7 @@ function LazyLoad({ children }: { children: React.ReactNode }) {
           observer.disconnect();
         }
       },
-      { rootMargin: '600px' }
+      { rootMargin: '200px' } // Reduced margin so it loads closer to scrolling into view
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -49,6 +49,42 @@ export default function App() {
   const [showContact, setShowContact] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [timeLeft, setTimeLeft] = useState(8 * 3600 + 44 * 60 + 13);
+  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    if (showCheckoutModal) {
+      loadRazorpay();
+    }
+  }, [showCheckoutModal]);
+
+  const validateAndPay = async () => {
+    let isValid = true;
+    if (!email || !/^\S+@\S+\.\S+$/.test(email)) {
+      setEmailError('Please enter a valid email');
+      isValid = false;
+    } else {
+      setEmailError('');
+    }
+
+    if (!phone || phone.length < 10) {
+      setPhoneError('Please enter a valid phone number');
+      isValid = false;
+    } else {
+      setPhoneError('');
+    }
+
+    if (isValid) {
+      setIsProcessing(true);
+      await handlePayment();
+      setIsProcessing(false);
+      setShowCheckoutModal(false);
+    }
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -66,6 +102,10 @@ export default function App() {
 
   const loadRazorpay = () => {
     return new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
       const script = document.createElement('script');
       script.src = 'https://checkout.razorpay.com/v1/checkout.js';
       script.onload = () => {
@@ -91,7 +131,7 @@ export default function App() {
 
     const options = {
       key: 'rzp_live_SPRufu2D9yjTyr',
-      amount: 4900, // amount in paise (49 INR)
+      amount: 9900, // amount in paise (99 INR)
       currency: 'INR',
       name: 'Habit Tracker',
       description: 'Ultimate Habit Tracker',
@@ -112,8 +152,8 @@ export default function App() {
       },
       prefill: {
         name: '',
-        email: '',
-        contact: ''
+        email: email,
+        contact: phone
       },
       theme: {
         color: '#6b21a8' // brand-purple
@@ -179,8 +219,8 @@ export default function App() {
       <div className="fixed top-0 w-full z-[60] h-[48px] bg-red-600 text-white flex items-center justify-center text-[12px] sm:text-[14px] px-2 md:px-4 font-medium shadow-md overflow-hidden">
         <div className="flex items-center justify-center whitespace-nowrap">
           <span>⚡ 24-Hour Sale Live Now —</span>
-          <span className="line-through opacity-80 mx-1.5">₹99</span>
-          <span className="font-extrabold text-[18px] sm:text-[20px] mx-1.5">₹49</span>
+          <span className="line-through opacity-80 mx-1.5">₹199</span>
+          <span className="font-extrabold text-[18px] sm:text-[20px] mx-1.5">₹99</span>
           <span className="hidden sm:inline">Grab it before it's gone!</span>
           <span className="ml-2 sm:ml-3 font-mono font-bold bg-black/20 px-2 py-0.5 rounded tracking-wider">{formatTime(timeLeft)}</span>
         </div>
@@ -188,7 +228,7 @@ export default function App() {
 
       <nav className="absolute top-[48px] w-full z-50 px-4 md:px-6 py-4 flex justify-between items-center glass-card border-b border-gray-100">
         <div className="text-lg md:text-xl font-bold tracking-tighter text-brand-purple">TRACKKER.</div>
-        <button onClick={handlePayment} className="bg-brand-purple text-white px-4 md:px-5 py-2 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity">
+        <button onClick={() => setShowCheckoutModal(true)} className="bg-brand-purple text-white px-4 md:px-5 py-2 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity">
           Buy Now
         </button>
       </nav>
@@ -332,7 +372,7 @@ export default function App() {
           className="w-full flex flex-col items-center mb-6 px-4"
         >
           <button 
-            onClick={handlePayment} 
+            onClick={() => setShowCheckoutModal(true)} 
             className="group relative inline-flex items-center justify-center gap-1 sm:gap-1.5 bg-gradient-to-b from-white to-purple-50/50 text-slate-800 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full font-bold text-sm sm:text-base shadow-[0_6px_20px_rgba(149,76,233,0.15)] border border-purple-200 hover:shadow-[0_8px_25px_rgba(149,76,233,0.2)] hover:border-purple-300 hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_2px_10px_rgba(149,76,233,0.15)] transition-all duration-300"
           >
             <span className="whitespace-nowrap z-10">⚡ Get Instant Access</span>
@@ -340,8 +380,8 @@ export default function App() {
             <div className="w-[1px] h-4 bg-slate-200 z-10 ml-0.5"></div>
             
             <div className="flex items-center gap-1 z-10">
-              <span className="text-purple-700 font-extrabold text-base sm:text-lg">₹49</span>
-              <span className="line-through text-slate-400 text-xs font-medium">₹99</span>
+              <span className="text-purple-700 font-extrabold text-base sm:text-lg">₹99</span>
+              <span className="line-through text-slate-400 text-xs font-medium">₹199</span>
             </div>
 
             <div className="bg-emerald-50 text-emerald-600 text-[10px] sm:text-[11px] font-extrabold px-1.5 py-0.5 rounded-full tracking-wide z-10 border border-emerald-100 ml-0.5">
@@ -420,7 +460,7 @@ export default function App() {
           </h3>
           
           <button 
-            onClick={handlePayment} 
+            onClick={() => setShowCheckoutModal(true)} 
             className="bg-gradient-to-r from-[#2A0845] to-[#6441A5] hover:from-[#1A052B] hover:to-[#4A2E7A] text-white px-5 py-3.5 rounded-2xl text-sm md:text-base font-bold w-full flex flex-col items-center justify-center shadow-[0_8px_20px_rgba(100,65,165,0.3)] transform hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group z-10"
           >
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
@@ -428,8 +468,8 @@ export default function App() {
               <span>⚡ Get Instant Access</span>
               <span className="text-white/50 font-normal">|</span>
               <div className="flex items-center gap-1.5">
-                <span>₹49</span>
-                <span className="line-through text-white/50 text-xs font-medium">₹99</span>
+                <span>₹99</span>
+                <span className="line-through text-white/50 text-xs font-medium">₹199</span>
               </div>
             </div>
           </button>
@@ -644,7 +684,7 @@ export default function App() {
           </h2>
           
           <button 
-            onClick={handlePayment} 
+            onClick={() => setShowCheckoutModal(true)} 
             className="bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-purple-950 text-white px-5 py-3 md:py-3.5 rounded-2xl text-sm md:text-base font-bold w-full flex flex-col items-center justify-center shadow-[0_8px_20px_rgba(107,33,168,0.25)] transform hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group z-10"
           >
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
@@ -652,8 +692,8 @@ export default function App() {
               <span className="whitespace-nowrap">⚡ Get Instant Access</span>
               <span className="text-white/40 font-normal">|</span>
               <div className="flex items-center gap-1.5">
-                <span>₹49</span>
-                <span className="line-through text-white/60 text-xs font-medium">₹99</span>
+                <span>₹99</span>
+                <span className="line-through text-white/60 text-xs font-medium">₹199</span>
               </div>
             </div>
           </button>
@@ -797,6 +837,97 @@ export default function App() {
                     </div>
                   </div>
                 )}
+              </div>
+            </motion.div>
+          </div>
+        )}
+        
+        {showCheckoutModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+              onClick={() => setShowCheckoutModal(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="relative w-full max-w-[380px] bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col font-sans"
+            >
+              {/* Header */}
+              <div className="bg-[#1A73E8] text-white px-5 pt-4 pb-6">
+                <div className="flex justify-between items-center mb-4 text-xs font-medium opacity-90">
+                  <span>User Details</span>
+                  <div className="flex gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/30"></div>
+                    <div className="w-4 h-1.5 rounded-full bg-[#00d26a]"></div>
+                    <div className="w-1.5 h-1.5 rounded-full bg-white/30"></div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <button onClick={() => setShowCheckoutModal(false)} className="hover:bg-white/10 p-1 rounded-full transition-colors -ml-1">
+                    <ArrowLeft size={20} />
+                  </button>
+                  <h3 className="text-xl font-bold tracking-wide">Habit Tracker</h3>
+                </div>
+              </div>
+
+              {/* Body */}
+              <div className="p-6 space-y-5 bg-white">
+                <div className="relative">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={`w-full px-4 py-3.5 border ${emailError ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:border-[#1A73E8] focus:ring-1 focus:ring-[#1A73E8] transition-colors peer placeholder-transparent`}
+                    placeholder="Email"
+                  />
+                  <label className="absolute left-4 -top-2.5 bg-white px-1 text-sm text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-[#1A73E8]">
+                    Email <span className="text-red-500">*</span>
+                  </label>
+                  {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
+                </div>
+
+                <div className="relative">
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className={`w-full px-4 py-3.5 border ${phoneError ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:border-[#1A73E8] focus:ring-1 focus:ring-[#1A73E8] transition-colors peer placeholder-transparent`}
+                    placeholder="Phone"
+                  />
+                  <label className="absolute left-4 -top-2.5 bg-white px-1 text-sm text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-[#1A73E8]">
+                    Phone <span className="text-red-500">*</span>
+                  </label>
+                  {phoneError && <p className="text-red-500 text-xs mt-1">{phoneError}</p>}
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="p-4 sm:p-5 border-t border-gray-100 bg-gray-50/50 flex justify-between items-center">
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm text-gray-400 line-through font-medium">₹199</span>
+                    <span className="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-md uppercase tracking-wider">SAVING 50%</span>
+                  </div>
+                  <div className="text-2xl font-extrabold text-gray-900 leading-none tracking-tight">
+                    ₹99<span className="text-sm text-gray-500 font-medium">.00</span>
+                  </div>
+                </div>
+                <button
+                  onClick={validateAndPay}
+                  disabled={isProcessing}
+                  className="bg-[#7811D8] text-white px-6 sm:px-8 py-3 rounded-xl font-bold hover:bg-[#6A0FBF] shadow-[0_4px_14px_rgba(120,17,216,0.25)] hover:shadow-[0_6px_20px_rgba(120,17,216,0.4)] transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-70 disabled:hover:translate-y-0 flex items-center justify-center min-w-[150px] sm:min-w-[160px]"
+                >
+                  {isProcessing ? (
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  ) : (
+                    "Proceed to Pay"
+                  )}
+                </button>
               </div>
             </motion.div>
           </div>
