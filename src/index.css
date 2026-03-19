@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-poppins: "Poppins", sans-serif;
+  
+  --color-brand-purple: #480d4c;
+  --color-brand-orange: #E8855A;
+  --color-soft-pink: #fdf2f8;
+  --color-soft-purple: #f3e8ff;
+  
+  @keyframes shimmer {
+    from { transform: translateX(-100%) skewX(-20deg); }
+    to { transform: translateX(200%) skewX(-20deg); }
+  }
+  --animate-shimmer: shimmer 2s infinite;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: #ffffff;
+  color: #1f2937;
+  overflow-x: hidden;
+}
+
+.gradient-bg {
+  background: radial-gradient(circle at top left, #fdf2f8 0%, #ffffff 40%, #f3e8ff 100%);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+}
+
+.btn-orange {
+  background-color: var(--color-brand-orange);
+  color: white;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-orange:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(232, 133, 90, 0.25);
+}
+
+.btn-purple {
+  background-color: var(--color-brand-purple);
+  color: white;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-purple:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(72, 13, 76, 0.25);
+}
+
+.habit-checkbox {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #e5e7eb;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.habit-checkbox:checked {
+  background-color: var(--color-brand-purple);
+  border-color: var(--color-brand-purple);
+}
+
+.habit-checkbox:checked::after {
+  content: '✓';
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* Custom Animations */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
