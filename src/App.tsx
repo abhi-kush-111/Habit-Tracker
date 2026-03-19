@@ -49,7 +49,7 @@ export default function App() {
   const [showContact, setShowContact] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
   const [timeLeft, setTimeLeft] = useState(8 * 3600 + 44 * 60 + 13);
-  const [showCheckoutModal, setShowCheckoutModal] = useState(false);
+  const showCheckoutModal = location.pathname === '/user-details';
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -82,7 +82,6 @@ export default function App() {
       setIsProcessing(true);
       await handlePayment();
       setIsProcessing(false);
-      setShowCheckoutModal(false);
     }
   };
 
@@ -228,7 +227,7 @@ export default function App() {
 
       <nav className="absolute top-[48px] w-full z-50 px-4 md:px-6 py-4 flex justify-between items-center glass-card border-b border-gray-100">
         <div className="text-lg md:text-xl font-bold tracking-tighter text-brand-purple">TRACKKER.</div>
-        <button onClick={() => setShowCheckoutModal(true)} className="bg-brand-purple text-white px-4 md:px-5 py-2 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity">
+        <button onClick={() => navigate('/user-details')} className="bg-brand-purple text-white px-4 md:px-5 py-2 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity">
           Buy Now
         </button>
       </nav>
@@ -374,7 +373,7 @@ export default function App() {
           className="w-full flex flex-col items-center mb-6 px-4"
         >
           <button 
-            onClick={() => setShowCheckoutModal(true)} 
+            onClick={() => navigate('/user-details')} 
             className="group relative inline-flex items-center justify-center gap-1 sm:gap-1.5 bg-gradient-to-b from-white to-purple-50/50 text-slate-800 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full font-bold text-sm sm:text-base shadow-[0_6px_20px_rgba(149,76,233,0.15)] border border-purple-200 hover:shadow-[0_8px_25px_rgba(149,76,233,0.2)] hover:border-purple-300 hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_2px_10px_rgba(149,76,233,0.15)] transition-all duration-300"
           >
             <span className="whitespace-nowrap z-10">⚡ Get Instant Access</span>
@@ -462,7 +461,7 @@ export default function App() {
           </h3>
           
           <button 
-            onClick={() => setShowCheckoutModal(true)} 
+            onClick={() => navigate('/user-details')} 
             className="bg-gradient-to-r from-[#2A0845] to-[#6441A5] hover:from-[#1A052B] hover:to-[#4A2E7A] text-white px-5 py-3.5 rounded-2xl text-sm md:text-base font-bold w-full flex flex-col items-center justify-center shadow-[0_8px_20px_rgba(100,65,165,0.3)] transform hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group z-10"
           >
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
@@ -686,7 +685,7 @@ export default function App() {
           </h2>
           
           <button 
-            onClick={() => setShowCheckoutModal(true)} 
+            onClick={() => navigate('/user-details')} 
             className="bg-gradient-to-r from-purple-700 to-purple-900 hover:from-purple-800 hover:to-purple-950 text-white px-5 py-3 md:py-3.5 rounded-2xl text-sm md:text-base font-bold w-full flex flex-col items-center justify-center shadow-[0_8px_20px_rgba(107,33,168,0.25)] transform hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden group z-10"
           >
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
@@ -845,19 +844,19 @@ export default function App() {
         )}
         
         {showCheckoutModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 sm:p-6">
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-              onClick={() => setShowCheckoutModal(false)}
+              onClick={() => navigate('/')}
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-[380px] bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col font-sans"
+              className="relative w-full h-full sm:h-auto sm:max-w-[380px] bg-white sm:rounded-xl shadow-2xl overflow-hidden flex flex-col font-sans sm:min-h-[480px]"
             >
               {/* Header */}
               <div className="bg-[#1A73E8] text-white px-5 pt-4 pb-6">
@@ -870,7 +869,7 @@ export default function App() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <button onClick={() => setShowCheckoutModal(false)} className="hover:bg-white/10 p-1 rounded-full transition-colors -ml-1">
+                  <button onClick={() => navigate('/')} className="hover:bg-white/10 p-1 rounded-full transition-colors -ml-1">
                     <ArrowLeft size={20} />
                   </button>
                   <h3 className="text-xl font-bold tracking-wide">Habit Tracker</h3>
@@ -878,51 +877,49 @@ export default function App() {
               </div>
 
               {/* Body */}
-              <div className="p-6 space-y-5 bg-white">
-                <div className="relative">
+              <div className="p-6 space-y-8 bg-white flex-grow rounded-t-xl sm:rounded-none -mt-2 relative z-10">
+                <div className="relative mt-2">
                   <input
+                    id="email-input"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={`w-full px-4 py-3.5 border ${emailError ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:border-[#1A73E8] focus:ring-1 focus:ring-[#1A73E8] transition-colors peer placeholder-transparent`}
-                    placeholder="Email"
+                    className={`block w-full px-3 py-3.5 border ${emailError ? 'border-[#d32f2f]' : 'border-gray-400'} rounded-md focus:outline-none focus:border-[#1A73E8] focus:ring-1 focus:ring-[#1A73E8] transition-colors peer bg-transparent text-gray-900`}
+                    placeholder=" "
                   />
-                  <label className="absolute left-4 -top-2.5 bg-white px-1 text-sm text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-[#1A73E8]">
-                    Email <span className="text-red-500">*</span>
+                  <label htmlFor="email-input" className={`absolute left-3 -top-2.5 bg-white px-1 text-xs transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-xs ${emailError ? 'text-[#d32f2f] peer-focus:text-[#d32f2f]' : 'text-gray-500 peer-focus:text-[#1A73E8]'} cursor-text`}>
+                    Email <span className="text-[#d32f2f]">*</span>
                   </label>
-                  {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
+                  {emailError && <p className="text-[#d32f2f] text-xs mt-1.5 absolute -bottom-5 left-0">{emailError}</p>}
                 </div>
 
-                <div className="relative">
+                <div className="relative mt-2">
                   <input
+                    id="phone-input"
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className={`w-full px-4 py-3.5 border ${phoneError ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:outline-none focus:border-[#1A73E8] focus:ring-1 focus:ring-[#1A73E8] transition-colors peer placeholder-transparent`}
-                    placeholder="Phone"
+                    className={`block w-full px-3 py-3.5 border ${phoneError ? 'border-[#d32f2f]' : 'border-gray-400'} rounded-md focus:outline-none focus:border-[#1A73E8] focus:ring-1 focus:ring-[#1A73E8] transition-colors peer bg-transparent text-gray-900`}
+                    placeholder=" "
                   />
-                  <label className="absolute left-4 -top-2.5 bg-white px-1 text-sm text-gray-500 transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-[#1A73E8]">
-                    Phone <span className="text-red-500">*</span>
+                  <label htmlFor="phone-input" className={`absolute left-3 -top-2.5 bg-white px-1 text-xs transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-3.5 peer-focus:-top-2.5 peer-focus:text-xs ${phoneError ? 'text-[#d32f2f] peer-focus:text-[#d32f2f]' : 'text-gray-500 peer-focus:text-[#1A73E8]'} cursor-text`}>
+                    Phone <span className="text-[#d32f2f]">*</span>
                   </label>
-                  {phoneError && <p className="text-red-500 text-xs mt-1">{phoneError}</p>}
+                  {phoneError && <p className="text-[#d32f2f] text-xs mt-1.5 absolute -bottom-5 left-0">{phoneError}</p>}
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="p-4 sm:p-5 border-t border-gray-100 bg-gray-50/50 flex justify-between items-center">
+              <div className="p-4 sm:p-5 border-t border-gray-200 bg-white flex justify-between items-center mt-auto">
                 <div className="flex flex-col">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm text-gray-400 line-through font-medium">₹199</span>
-                    <span className="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-md uppercase tracking-wider">SAVING 50%</span>
-                  </div>
-                  <div className="text-2xl font-extrabold text-gray-900 leading-none tracking-tight">
-                    ₹99<span className="text-sm text-gray-500 font-medium">.00</span>
+                  <div className="text-xl font-bold text-gray-900 leading-none tracking-tight">
+                    ₹ 99.00
                   </div>
                 </div>
                 <button
                   onClick={validateAndPay}
                   disabled={isProcessing}
-                  className="bg-[#7811D8] text-white px-6 sm:px-8 py-3 rounded-xl font-bold hover:bg-[#6A0FBF] shadow-[0_4px_14px_rgba(120,17,216,0.25)] hover:shadow-[0_6px_20px_rgba(120,17,216,0.4)] transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-70 disabled:hover:translate-y-0 flex items-center justify-center min-w-[150px] sm:min-w-[160px]"
+                  className="bg-black text-white px-6 sm:px-8 py-3.5 rounded-md font-bold hover:bg-gray-900 transition-all duration-300 disabled:opacity-70 flex items-center justify-center min-w-[150px] sm:min-w-[160px]"
                 >
                   {isProcessing ? (
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
