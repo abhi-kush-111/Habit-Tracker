@@ -340,6 +340,8 @@ export default function App() {
                     alt="Indian User"
                     className={`w-8 h-8 md:w-9 md:h-9 rounded-full border-2 border-[#FAF9F6] object-cover shadow-sm ${i > 0 ? '-ml-3' : ''}`}
                     referrerPolicy="no-referrer"
+                    loading="lazy"
+                    decoding="async"
                   />
                 ))}
               </div>

@@ -16,13 +16,17 @@
         };
         const events = ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'];
         events.forEach(e => window.addEventListener(e, loadGTM, { once: true, passive: true }));
-        setTimeout(loadGTM, 5000); // Fallback
+        setTimeout(loadGTM, 8500); // Fallback extended for PageSpeed
       });
     </script>
     <!-- End Google Tag Manager -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+    </noscript>
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <style>
       /* 1. Inline Critical CSS */
