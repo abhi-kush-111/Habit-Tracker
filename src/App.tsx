@@ -914,7 +914,7 @@ export default function App() {
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-sm text-gray-400 line-through font-medium">₹199</span>
-                    <span className="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-md uppercase tracking-wider">SAVING 50%</span>
+                    <span className="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-md uppercase tracking-wider">SAVE 50%</span>
                   </div>
                   <div className="text-2xl font-extrabold text-gray-900 leading-none tracking-tight">
                     ₹99<span className="text-sm text-gray-500 font-medium">.00</span>
