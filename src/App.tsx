@@ -130,7 +130,7 @@ export default function App() {
 
     const options = {
       key: 'rzp_live_SPRufu2D9yjTyr',
-      amount: 9900, // amount in paise (99 INR)
+      amount: 500, // amount in paise (5 INR)
       currency: 'INR',
       name: 'Habit Tracker',
       description: 'Ultimate Habit Tracker',
@@ -219,7 +219,7 @@ export default function App() {
         <div className="flex items-center justify-center whitespace-nowrap">
           <span>⚡ 24-Hour Sale Live Now —</span>
           <span className="line-through opacity-80 mx-1.5">₹199</span>
-          <span className="font-extrabold text-[18px] sm:text-[20px] mx-1.5">₹99</span>
+          <span className="font-extrabold text-[18px] sm:text-[20px] mx-1.5">₹5</span>
           <span className="hidden sm:inline">Grab it before it's gone!</span>
           <span className="ml-2 sm:ml-3 font-mono font-bold bg-black/20 px-2 py-0.5 rounded tracking-wider">{formatTime(timeLeft)}</span>
         </div>
@@ -381,7 +381,7 @@ export default function App() {
             <div className="w-[1px] h-4 bg-slate-200 z-10 ml-0.5"></div>
             
             <div className="flex items-center gap-1 z-10">
-              <span className="text-purple-700 font-extrabold text-base sm:text-lg">₹99</span>
+              <span className="text-purple-700 font-extrabold text-base sm:text-lg">₹5</span>
               <span className="line-through text-slate-400 text-xs font-medium">₹199</span>
             </div>
 
@@ -469,7 +469,7 @@ export default function App() {
               <span>⚡ Get Instant Access</span>
               <span className="text-white/50 font-normal">|</span>
               <div className="flex items-center gap-1.5">
-                <span>₹99</span>
+                <span>₹5</span>
                 <span className="line-through text-white/50 text-xs font-medium">₹199</span>
               </div>
             </div>
@@ -693,7 +693,7 @@ export default function App() {
               <span className="whitespace-nowrap">⚡ Get Instant Access</span>
               <span className="text-white/40 font-normal">|</span>
               <div className="flex items-center gap-1.5">
-                <span>₹99</span>
+                <span>₹5</span>
                 <span className="line-through text-white/60 text-xs font-medium">₹199</span>
               </div>
             </div>
@@ -917,7 +917,7 @@ export default function App() {
                     <span className="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-md uppercase tracking-wider">SAVING 50%</span>
                   </div>
                   <div className="text-2xl font-extrabold text-gray-900 leading-none tracking-tight">
-                    ₹99<span className="text-sm text-gray-500 font-medium">.00</span>
+                    ₹5<span className="text-sm text-gray-500 font-medium">.00</span>
                   </div>
                 </div>
                 <button
