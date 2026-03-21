@@ -1,7 +1,8 @@
 import React, { useState, useEffect, lazy, Suspense, useRef } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useAnimation } from 'motion/react';
 import { Plus, X, ChevronLeft, ChevronRight, CheckCircle, Quote, Lock, ShieldCheck, Star, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import confetti from 'canvas-confetti';
 
 declare global {
   interface Window {
@@ -54,6 +55,97 @@ const getYearStats = () => {
   return { daysLeft, daysPassed, percentagePassed };
 };
 
+const PriceDrop = ({ unlocked, strikeColorClass, onComplete }: { unlocked: boolean, strikeColorClass: string, onComplete?: () => void }) => {
+  const outerControls = useAnimation();
+  const innerControls = useAnimation();
+  const [isDone, setIsDone] = useState(false);
+  // 21 items. Index 0 is 49. Index 20 is 99.
+  const numbers = [49, 50, 52, 55, 57, 60, 62, 65, 68, 70, 73, 75, 78, 80, 83, 85, 88, 90, 93, 96, 99];
+  const itemHeight = 1.5; // em
+  
+  useEffect(() => {
+    if (unlocked) {
+      const sequence = async () => {
+        // 0. Initial hold so they read the baseline "99"
+        await new Promise(resolve => setTimeout(resolve, 3500));
+        
+        // 1. Pop the container to grab attention
+        await outerControls.start({
+          scale: 1.6,
+          color: "#9333ea", // purple-600
+          textShadow: "0px 0px 15px rgba(147, 51, 234, 0.8)",
+          transition: { duration: 0.5, type: "spring", bounce: 0.6 }
+        });
+        
+        // 2. Hold for 1 second so they read "99"
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // 3. Roll inner container (Slot machine effect)
+        innerControls.start({
+          y: "0em",
+          transition: { 
+            duration: 2.2, 
+            ease: [0.1, 0.0, 0.1, 1], // Starts fast, long smooth deceleration
+          }
+        });
+
+        // 4. Scale down outer container exactly as it lands
+        await new Promise(resolve => setTimeout(resolve, 1900)); 
+        
+        await outerControls.start({
+          scale: 1,
+          color: "inherit",
+          textShadow: "none",
+          transition: { duration: 0.4, type: "spring", bounce: 0.5 }
+        });
+        
+        setIsDone(true);
+        if (onComplete) onComplete();
+      };
+      sequence();
+    } else {
+      setIsDone(false);
+      outerControls.set({ scale: 1, color: "inherit", textShadow: "none" });
+      innerControls.set({ y: `-${(numbers.length - 1) * itemHeight}em` });
+    }
+  }, [unlocked, outerControls, innerControls]);
+
+  return (
+    <div className="flex items-center z-10">
+      <motion.div 
+        className="relative overflow-hidden inline-flex items-center justify-center font-extrabold text-base sm:text-lg origin-left" 
+        style={{ height: `${itemHeight}em`, minWidth: '3ch' }}
+        animate={outerControls}
+      >
+        <motion.div 
+          className="flex flex-col absolute top-0 left-0 w-full"
+          animate={innerControls}
+        >
+          {numbers.map((num, i) => (
+            <span key={i} className="flex items-center justify-center" style={{ height: `${itemHeight}em` }}>
+              ₹{num}
+            </span>
+          ))}
+        </motion.div>
+        <span className="invisible font-extrabold text-base sm:text-lg">₹99</span>
+      </motion.div>
+      
+      <AnimatePresence>
+        {isDone && (
+          <motion.span
+            initial={{ opacity: 0, scale: 0.5, width: 0, marginLeft: 0 }}
+            animate={{ opacity: 1, scale: 1, width: 'auto', marginLeft: '6px' }}
+            transition={{ duration: 0.4, type: "spring", bounce: 0.5 }} 
+            className={`line-through text-xs font-medium whitespace-nowrap overflow-hidden ${strikeColorClass}`}
+          >
+            ₹99
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -62,7 +154,10 @@ export default function App() {
   const [showPrivacy, setShowPrivacy] = useState(false);
   const [showContact, setShowContact] = useState(false);
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(8 * 3600 + 44 * 60 + 13);
+  const [saleUnlocked, setSaleUnlocked] = useState(false);
+  const [showBanner, setShowBanner] = useState(false);
+  const [timeLeftMs, setTimeLeftMs] = useState(4 * 60 * 60 * 1000);
+  const topButtonRef = useRef<HTMLDivElement>(null);
   const showCheckoutModal = location.pathname === '/user-details';
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -101,17 +196,59 @@ export default function App() {
   };
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !saleUnlocked) {
+          setSaleUnlocked(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5, rootMargin: "-10% 0px -10% 0px" }
+    );
+    
+    if (topButtonRef.current) {
+      observer.observe(topButtonRef.current);
+    }
+    return () => observer.disconnect();
+  }, [saleUnlocked]);
 
-  const formatTime = (seconds: number) => {
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  useEffect(() => {
+    if (showBanner) {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ec4899', '#8b5cf6', '#10b981', '#f59e0b'],
+        zIndex: 100
+      });
+    }
+  }, [showBanner]);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (showBanner) {
+      const endTime = Date.now() + 4 * 60 * 60 * 1000;
+      timer = setInterval(() => {
+        const remaining = endTime - Date.now();
+        if (remaining <= 0) {
+          setTimeLeftMs(0);
+          clearInterval(timer);
+        } else {
+          setTimeLeftMs(remaining);
+        }
+      }, 37);
+    }
+    return () => clearInterval(timer);
+  }, [showBanner]);
+
+  const formatTimeMs = (ms: number) => {
+    const totalSeconds = Math.floor(ms / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    const tenths = Math.floor((ms % 1000) / 100);
+
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${tenths}`;
   };
 
   const loadRazorpay = () => {
@@ -145,7 +282,7 @@ export default function App() {
 
     const options = {
       key: 'rzp_live_SPRufu2D9yjTyr',
-      amount: 4900, // amount in paise (49 INR)
+      amount: saleUnlocked ? 4900 : 9900, // amount in paise
       currency: 'INR',
       name: 'Habit Tracker',
       description: 'Ultimate Habit Tracker',
@@ -230,17 +367,35 @@ export default function App() {
 
   return (
     <div className="antialiased gradient-bg min-h-screen">
-      <div className="fixed top-0 w-full z-[60] h-[48px] bg-red-600 text-white flex items-center justify-center text-[12px] sm:text-[14px] px-2 md:px-4 font-medium shadow-md overflow-hidden">
-        <div className="flex items-center justify-center whitespace-nowrap">
-          <span>⚡ 24-Hour Sale Live Now —</span>
-          <span className="line-through opacity-80 mx-1.5">₹99</span>
-          <span className="font-extrabold text-[18px] sm:text-[20px] mx-1.5">₹49</span>
-          <span className="hidden sm:inline">Grab it before it's gone!</span>
-          <span className="ml-2 sm:ml-3 font-mono font-bold bg-black/20 px-2 py-0.5 rounded tracking-wider">{formatTime(timeLeft)}</span>
-        </div>
-      </div>
+      <AnimatePresence>
+        {showBanner && (
+          <motion.div 
+            initial={{ y: -48 }}
+            animate={{ y: 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed top-0 w-full z-[60] h-[48px] bg-gradient-to-r from-red-700 via-red-600 to-red-700 text-white flex items-center justify-center text-[12px] sm:text-[14px] px-2 md:px-4 font-medium shadow-md overflow-hidden"
+          >
+            {/* Shimmer Effect */}
+            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_3s_infinite]"></div>
+            
+            <div className="flex items-center justify-center whitespace-nowrap relative z-10">
+              <span className="flex items-center gap-1.5">
+                <span className="animate-pulse">🚨</span> 
+                <span className="font-bold tracking-wide">PRICE DROP:</span> 
+                <span className="hidden sm:inline">Claim now at only</span>
+                <span className="sm:hidden">Only</span>
+                <span className="text-yellow-300 font-extrabold text-[14px] sm:text-[16px]">₹49</span> 
+                <span className="hidden sm:inline">before time runs out!</span>
+              </span>
+              <span className="ml-2 sm:ml-3 font-mono font-bold bg-white text-red-700 px-2.5 py-1 rounded-full tracking-wider w-[105px] text-center shadow-inner border border-red-100">
+                {formatTimeMs(timeLeftMs)}
+              </span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      <nav className="absolute top-[48px] w-full z-50 px-4 md:px-6 py-4 flex justify-between items-center glass-card border-b border-gray-100">
+      <nav className={`absolute w-full z-50 px-4 md:px-6 py-4 flex justify-between items-center glass-card border-b border-gray-100 transition-all duration-500 ${showBanner ? 'top-[48px]' : 'top-0'}`}>
         <div className="text-lg md:text-xl font-bold tracking-tighter text-brand-purple">TRACKKER.</div>
         <button onClick={() => navigate('/user-details')} className="bg-brand-purple text-white px-4 md:px-5 py-2 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-widest hover:opacity-90 transition-opacity">
           Buy Now
@@ -249,48 +404,6 @@ export default function App() {
 
       <header className="pt-32 md:pt-44 pb-10 md:pb-12 px-0 md:px-6 flex flex-col items-center w-full overflow-hidden">
         <div className="px-6 md:px-0 flex flex-col items-center w-full">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-8 md:mb-10"
-          >
-            <motion.button 
-              animate={{ 
-                y: [0, -6, 0],
-                boxShadow: [
-                  "0px 4px 20px rgba(0,0,0,0.05)", 
-                  "0px 12px 25px rgba(236,72,153,0.15)", 
-                  "0px 4px 20px rgba(0,0,0,0.05)"
-                ]
-              }}
-              transition={{ 
-                duration: 4, 
-                repeat: Infinity, 
-                ease: "easeInOut" 
-              }}
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.dataLayer = window.dataLayer || [];
-                  window.dataLayer.push({ event: 'try_demo_clicked' });
-                }
-                document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="relative group p-[1.5px] rounded-full overflow-hidden flex items-center justify-center cursor-pointer"
-            >
-              {/* Spinning Gradient Border */}
-              <div className="absolute w-[400%] h-[400%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_200deg,#ec4899_280deg,#8b5cf6_360deg)] opacity-70 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
-              {/* Inner White Pill */}
-              <div className="relative bg-white px-6 md:px-8 py-3 md:py-3.5 rounded-full flex items-center justify-center gap-1.5 w-full h-full">
-                <span className="text-[10px] md:text-xs font-bold tracking-[0.2em] text-slate-500">
-                  TRY <span className="text-pink-500">INTERACTIVE</span> DEMO
-                </span>
-                <span className="text-pink-500 ml-1 group-hover:translate-y-0.5 transition-transform duration-300">↓</span>
-              </div>
-            </motion.button>
-          </motion.div>
-          
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm mb-6">
             <span className="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
             <span className="text-xs font-semibold text-red-600 uppercase tracking-wider">The year is slipping away.</span>
@@ -335,7 +448,9 @@ export default function App() {
               You still have a chance to <br className="block sm:hidden" />
               <span className="text-black relative inline-block sm:ml-2 mt-1 sm:mt-0">
                 <span className="relative z-10">make this year count.</span>
-                <div className="absolute bottom-0 sm:bottom-1 left-0 w-full h-2 md:h-4 bg-indigo-100 rounded-full"></div>
+                <svg className="absolute -bottom-1 sm:-bottom-2 left-0 w-full h-4 sm:h-5 text-indigo-200 -z-0" viewBox="0 0 255 24" fill="none" preserveAspectRatio="none">
+                  <path d="M3.20459 15.6552C28.9953 10.3837 80.4859 3.5186 136.257 2.21989C175.876 1.29705 218.423 2.6588 251.685 6.64962C253.308 6.84439 253.868 8.94832 252.372 9.77497C234.333 19.742 181.714 23.3444 135.59 22.8427C86.7417 22.3113 36.3197 18.8475 3.54116 17.5843C1.86884 17.5198 1.63738 15.9754 3.20459 15.6552Z" fill="currentColor"/>
+                </svg>
               </span>
             </h2>
           </motion.div>
@@ -346,7 +461,7 @@ export default function App() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="max-w-xs md:max-w-md text-center text-gray-500 text-base md:text-xl mb-10 md:mb-12 leading-relaxed"
           >
-            Stop waiting for Monday. Start tracking your habits today with the <span className="font-semibold text-gray-800">automated system</span> that turns your goals into <span className="font-semibold text-gray-800">measurable progress.</span>
+            Stop waiting for the perfect day. Start tracking your habits today with the <span className="font-semibold text-gray-800">automated system</span> that turns your goals into <span className="font-semibold text-gray-800">measurable progress.</span>
           </motion.p>
         </div>
 
@@ -391,7 +506,7 @@ export default function App() {
                 ))}
               </div>
               <div className="flex items-baseline gap-1.5">
-                <span className="font-poppins font-bold text-[14px] md:text-[15px] text-[#1A1A1A]">1,384+</span>
+                <span className="font-poppins font-bold text-[14px] md:text-[15px] text-[#1A1A1A]">2,763+</span>
                 <span className="font-poppins text-[13px] md:text-[14px] text-[#666666]">building consistency</span>
               </div>
             </div>
@@ -413,6 +528,7 @@ export default function App() {
 
         {/* Premium Trust Container */}
         <motion.div
+          ref={topButtonRef}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
@@ -426,14 +542,29 @@ export default function App() {
             
             <div className="w-[1px] h-4 bg-slate-200 z-10 ml-0.5"></div>
             
-            <div className="flex items-center gap-1 z-10">
-              <span className="text-purple-700 font-extrabold text-base sm:text-lg">₹49</span>
-              <span className="line-through text-slate-400 text-xs font-medium">₹99</span>
+            <div className="flex items-center gap-1 z-10 text-purple-700">
+              <PriceDrop unlocked={saleUnlocked} strikeColorClass="text-slate-400" onComplete={() => setShowBanner(true)} />
             </div>
 
-            <div className="bg-emerald-50 text-emerald-600 text-[10px] sm:text-[11px] font-extrabold px-1.5 py-0.5 rounded-full tracking-wide z-10 border border-emerald-100 ml-0.5">
-              SAVE 50%
-            </div>
+            <AnimatePresence>
+              {showBanner && (
+                <motion.div 
+                  initial={{ width: 0, opacity: 0, marginLeft: 0 }}
+                  animate={{ width: 'auto', opacity: 1, marginLeft: '4px' }}
+                  transition={{ type: "spring", bounce: 0.5 }}
+                  className="overflow-hidden whitespace-nowrap z-10 flex items-center"
+                >
+                  <motion.div 
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", bounce: 0.5 }}
+                    className="bg-emerald-50 text-emerald-600 text-[10px] sm:text-[11px] font-extrabold px-1.5 py-0.5 rounded-full tracking-wide border border-emerald-100"
+                  >
+                    SAVE 50%
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </button>
 
           {/* Micro-copy */}
@@ -514,10 +645,7 @@ export default function App() {
             <div className="flex items-center gap-2">
               <span>⚡ Get Instant Access</span>
               <span className="text-white/50 font-normal">|</span>
-              <div className="flex items-center gap-1.5">
-                <span>₹49</span>
-                <span className="line-through text-white/50 text-xs font-medium">₹99</span>
-              </div>
+              <PriceDrop unlocked={saleUnlocked} strikeColorClass="text-white/50" />
             </div>
           </button>
           
@@ -657,6 +785,49 @@ export default function App() {
               />
             ))}
           </div>
+
+          {/* Try Demo Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mt-16 flex justify-center w-full"
+          >
+            <motion.button 
+              animate={{ 
+                y: [0, -6, 0],
+                boxShadow: [
+                  "0px 4px 20px rgba(0,0,0,0.05)", 
+                  "0px 12px 25px rgba(236,72,153,0.15)", 
+                  "0px 4px 20px rgba(0,0,0,0.05)"
+                ]
+              }}
+              transition={{ 
+                duration: 4, 
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }}
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.dataLayer = window.dataLayer || [];
+                  window.dataLayer.push({ event: 'try_demo_clicked' });
+                }
+                document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="relative group p-[1.5px] rounded-full overflow-hidden flex items-center justify-center cursor-pointer"
+            >
+              {/* Spinning Gradient Border */}
+              <div className="absolute w-[400%] h-[400%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_200deg,#ec4899_280deg,#8b5cf6_360deg)] opacity-70 group-hover:opacity-100 transition-opacity duration-500"></div>
+              
+              {/* Inner White Pill */}
+              <div className="relative bg-white px-6 md:px-8 py-3 md:py-3.5 rounded-full flex items-center justify-center gap-1.5 w-full h-full">
+                <span className="text-[10px] md:text-xs font-bold tracking-[0.2em] text-slate-500">
+                  TRY <span className="text-pink-500">INTERACTIVE</span> DEMO
+                </span>
+                <span className="text-pink-500 ml-1 group-hover:translate-y-0.5 transition-transform duration-300">↑</span>
+              </div>
+            </motion.button>
+          </motion.div>
         </div>
       </section>
 
@@ -738,10 +909,7 @@ export default function App() {
             <div className="flex items-center justify-center gap-2">
               <span className="whitespace-nowrap">⚡ Get Instant Access</span>
               <span className="text-white/40 font-normal">|</span>
-              <div className="flex items-center gap-1.5">
-                <span>₹49</span>
-                <span className="line-through text-white/60 text-xs font-medium">₹99</span>
-              </div>
+              <PriceDrop unlocked={saleUnlocked} strikeColorClass="text-white/60" />
             </div>
           </button>
           
@@ -959,11 +1127,28 @@ export default function App() {
               <div className="p-4 sm:p-5 border-t border-gray-200 bg-white flex justify-between items-center mt-auto">
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm text-gray-400 line-through font-medium">₹99</span>
-                    <span className="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-md uppercase tracking-wider">SAVE 50%</span>
+                    <AnimatePresence>
+                      {showBanner && (
+                        <motion.div 
+                          initial={{ width: 0, opacity: 0, marginLeft: 0 }}
+                          animate={{ width: 'auto', opacity: 1, marginLeft: '4px' }}
+                          transition={{ type: "spring", bounce: 0.5 }}
+                          className="overflow-hidden whitespace-nowrap flex items-center"
+                        >
+                          <motion.span 
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ type: "spring", bounce: 0.5 }}
+                            className="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-md uppercase tracking-wider"
+                          >
+                            SAVE 50%
+                          </motion.span>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
-                  <div className="text-2xl font-extrabold text-gray-900 leading-none tracking-tight">
-                    ₹49<span className="text-sm text-gray-500 font-medium">.00</span>
+                  <div className="text-2xl font-extrabold text-gray-900 leading-none tracking-tight flex items-baseline">
+                    <PriceDrop unlocked={saleUnlocked} strikeColorClass="text-gray-400" />
                   </div>
                 </div>
                 <button
