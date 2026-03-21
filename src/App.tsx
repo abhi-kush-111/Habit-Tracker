@@ -373,21 +373,21 @@ export default function App() {
             initial={{ y: -48 }}
             animate={{ y: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed top-0 w-full z-[60] h-[48px] bg-gradient-to-r from-red-700 via-red-600 to-red-700 text-white flex items-center justify-center text-[12px] sm:text-[14px] px-2 md:px-4 font-medium shadow-md overflow-hidden"
+            className="fixed top-0 w-full z-[60] h-[48px] bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white flex items-center justify-center text-[12px] sm:text-[14px] px-2 md:px-4 font-medium shadow-md overflow-hidden"
           >
             {/* Shimmer Effect */}
-            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full animate-[shimmer_3s_infinite]"></div>
+            <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-[shimmer_3s_infinite]"></div>
             
             <div className="flex items-center justify-center whitespace-nowrap relative z-10">
               <span className="flex items-center gap-1.5">
-                <span className="animate-pulse">🚨</span> 
-                <span className="font-bold tracking-wide">PRICE DROP:</span> 
-                <span className="hidden sm:inline">Claim now at only</span>
-                <span className="sm:hidden">Only</span>
-                <span className="text-yellow-300 font-extrabold text-[14px] sm:text-[16px]">₹49</span> 
-                <span className="hidden sm:inline">before time runs out!</span>
+                <span className="animate-pulse text-[16px]">🚨</span> 
+                <span className="font-bold tracking-wide text-white">PRICE DROP:</span> 
+                <span className="hidden sm:inline text-slate-200">Claim now at</span>
+                <span className="sm:hidden text-slate-200">at</span>
+                <span className="text-yellow-400 font-extrabold text-[14px] sm:text-[16px]">₹49</span> 
+                <span className="hidden sm:inline text-slate-200">before time runs out!</span>
               </span>
-              <span className="ml-2 sm:ml-3 font-mono font-bold bg-white text-red-700 px-2.5 py-1 rounded-full tracking-wider w-[105px] text-center shadow-inner border border-red-100">
+              <span className="ml-2 sm:ml-3 font-mono font-bold bg-white/10 text-white px-2.5 py-1 rounded-full tracking-wider w-[105px] text-center shadow-inner border border-white/20 backdrop-blur-sm">
                 {formatTimeMs(timeLeftMs)}
               </span>
             </div>
