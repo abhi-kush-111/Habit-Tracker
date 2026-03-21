@@ -40,6 +40,20 @@ const TESTIMONIALS = [
   { quote: "I decided to give this a try and it's probably the best purchase I've made this year. No annoying push notifications, no subscriptions. Just a clean, satisfying checklist that actually keeps me accountable.", author: "Vikram S." },
 ];
 
+const getYearStats = () => {
+  const today = new Date();
+  const startOfYear = new Date(today.getFullYear(), 0, 1);
+  const endOfYear = new Date(today.getFullYear(), 11, 31, 23, 59, 59);
+  const msPerDay = 1000 * 60 * 60 * 24;
+  
+  const totalDays = Math.ceil((endOfYear.getTime() - startOfYear.getTime()) / msPerDay);
+  const daysLeft = Math.ceil((endOfYear.getTime() - today.getTime()) / msPerDay);
+  const daysPassed = totalDays - daysLeft;
+  const percentagePassed = (daysPassed / totalDays) * 100;
+  
+  return { daysLeft, daysPassed, percentagePassed };
+};
+
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -55,6 +69,7 @@ export default function App() {
   const [emailError, setEmailError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const { daysLeft, daysPassed, percentagePassed } = getYearStats();
 
   useEffect(() => {
     if (showCheckoutModal) {
@@ -130,7 +145,7 @@ export default function App() {
 
     const options = {
       key: 'rzp_live_SPRufu2D9yjTyr',
-      amount: 9900, // amount in paise (99 INR)
+      amount: 4900, // amount in paise (49 INR)
       currency: 'INR',
       name: 'Habit Tracker',
       description: 'Ultimate Habit Tracker',
@@ -218,8 +233,8 @@ export default function App() {
       <div className="fixed top-0 w-full z-[60] h-[48px] bg-red-600 text-white flex items-center justify-center text-[12px] sm:text-[14px] px-2 md:px-4 font-medium shadow-md overflow-hidden">
         <div className="flex items-center justify-center whitespace-nowrap">
           <span>⚡ 24-Hour Sale Live Now —</span>
-          <span className="line-through opacity-80 mx-1.5">₹199</span>
-          <span className="font-extrabold text-[18px] sm:text-[20px] mx-1.5">₹99</span>
+          <span className="line-through opacity-80 mx-1.5">₹99</span>
+          <span className="font-extrabold text-[18px] sm:text-[20px] mx-1.5">₹49</span>
           <span className="hidden sm:inline">Grab it before it's gone!</span>
           <span className="ml-2 sm:ml-3 font-mono font-bold bg-black/20 px-2 py-0.5 rounded tracking-wider">{formatTime(timeLeft)}</span>
         </div>
@@ -276,22 +291,53 @@ export default function App() {
             </motion.button>
           </motion.div>
           
-          <h1 
-            className="font-extrabold text-5xl sm:text-6xl md:text-[96px] text-center leading-[0.9] mb-6 tracking-tight text-gray-900 uppercase"
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 shadow-sm mb-6">
+            <span className="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
+            <span className="text-xs font-semibold text-red-600 uppercase tracking-wider">The year is slipping away.</span>
+          </div>
+          
+          <div className="flex justify-center items-center gap-3 sm:gap-5 mb-4">
+            <h1 className="font-extrabold text-[4.5rem] sm:text-[7rem] md:text-[130px] leading-none tracking-tighter text-gray-900">
+              {daysLeft}
+            </h1>
+            <div className="flex flex-col justify-center items-start text-[1.25rem] sm:text-[2rem] md:text-[36px] font-extrabold leading-[0.85] tracking-tight uppercase">
+              <span className="text-gray-900">Days</span>
+              <span className="text-red-500">Left</span>
+            </div>
+          </div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="w-full max-w-[16rem] sm:max-w-md mx-auto mb-12 relative"
           >
-            HABIT <br /> TRACKER
-          </h1>
+            <div className="h-5 sm:h-6 w-full bg-gray-200/50 rounded-full overflow-hidden relative flex items-center justify-center">
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${percentagePassed}%` }}
+                transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
+                className="absolute left-0 top-0 h-full bg-gray-300 rounded-full"
+              />
+              <span className="relative z-10 text-[9px] sm:text-[10px] font-bold text-gray-500 tracking-widest">
+                {daysPassed} DAYS GONE
+              </span>
+            </div>
+          </motion.div>
           
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="relative inline-block mb-10 md:mb-12"
+            className="relative mb-10 md:mb-12 px-4"
           >
-            <h2 className="font-serif text-xl sm:text-3xl md:text-5xl italic text-gray-400 relative z-10 whitespace-nowrap">
-              Build consistency in just <span className="text-black">30 days</span>
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl italic text-gray-400 text-center">
+              You still have a chance to <br className="block sm:hidden" />
+              <span className="text-black relative inline-block sm:ml-2 mt-1 sm:mt-0">
+                <span className="relative z-10">make this year count.</span>
+                <div className="absolute bottom-0 sm:bottom-1 left-0 w-full h-2 md:h-4 bg-indigo-100 rounded-full"></div>
+              </span>
             </h2>
-            <div className="absolute bottom-1 left-0 w-full h-2 md:h-4 bg-indigo-50/60 rounded-full"></div>
           </motion.div>
 
           <motion.p 
@@ -300,7 +346,7 @@ export default function App() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="max-w-xs md:max-w-md text-center text-gray-500 text-base md:text-xl mb-10 md:mb-12 leading-relaxed"
           >
-            The <span className="font-semibold text-gray-800">automated habit system</span> that turns your goals into <span className="font-semibold text-gray-800">measurable progress.</span>
+            Stop waiting for Monday. Start tracking your habits today with the <span className="font-semibold text-gray-800">automated system</span> that turns your goals into <span className="font-semibold text-gray-800">measurable progress.</span>
           </motion.p>
         </div>
 
@@ -381,8 +427,8 @@ export default function App() {
             <div className="w-[1px] h-4 bg-slate-200 z-10 ml-0.5"></div>
             
             <div className="flex items-center gap-1 z-10">
-              <span className="text-purple-700 font-extrabold text-base sm:text-lg">₹99</span>
-              <span className="line-through text-slate-400 text-xs font-medium">₹199</span>
+              <span className="text-purple-700 font-extrabold text-base sm:text-lg">₹49</span>
+              <span className="line-through text-slate-400 text-xs font-medium">₹99</span>
             </div>
 
             <div className="bg-emerald-50 text-emerald-600 text-[10px] sm:text-[11px] font-extrabold px-1.5 py-0.5 rounded-full tracking-wide z-10 border border-emerald-100 ml-0.5">
@@ -469,8 +515,8 @@ export default function App() {
               <span>⚡ Get Instant Access</span>
               <span className="text-white/50 font-normal">|</span>
               <div className="flex items-center gap-1.5">
-                <span>₹99</span>
-                <span className="line-through text-white/50 text-xs font-medium">₹199</span>
+                <span>₹49</span>
+                <span className="line-through text-white/50 text-xs font-medium">₹99</span>
               </div>
             </div>
           </button>
@@ -693,8 +739,8 @@ export default function App() {
               <span className="whitespace-nowrap">⚡ Get Instant Access</span>
               <span className="text-white/40 font-normal">|</span>
               <div className="flex items-center gap-1.5">
-                <span>₹99</span>
-                <span className="line-through text-white/60 text-xs font-medium">₹199</span>
+                <span>₹49</span>
+                <span className="line-through text-white/60 text-xs font-medium">₹99</span>
               </div>
             </div>
           </button>
@@ -913,11 +959,11 @@ export default function App() {
               <div className="p-4 sm:p-5 border-t border-gray-200 bg-white flex justify-between items-center mt-auto">
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm text-gray-400 line-through font-medium">₹199</span>
+                    <span className="text-sm text-gray-400 line-through font-medium">₹99</span>
                     <span className="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-md uppercase tracking-wider">SAVE 50%</span>
                   </div>
                   <div className="text-2xl font-extrabold text-gray-900 leading-none tracking-tight">
-                    ₹99<span className="text-sm text-gray-500 font-medium">.00</span>
+                    ₹49<span className="text-sm text-gray-500 font-medium">.00</span>
                   </div>
                 </div>
                 <button
