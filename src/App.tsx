@@ -120,6 +120,7 @@ const PriceDrop = ({ unlocked, strikeColorClass, onComplete }: { unlocked: boole
         <motion.div 
           className="flex flex-col absolute top-0 left-0 w-full"
           animate={innerControls}
+          initial={{ y: `-${(numbers.length - 1) * itemHeight}em` }}
         >
           {numbers.map((num, i) => (
             <span key={i} className="flex items-center justify-center" style={{ height: `${itemHeight}em` }}>
