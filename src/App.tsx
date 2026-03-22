@@ -386,44 +386,19 @@ export default function App() {
 
       <section className="pt-4 pb-10 md:pt-6 md:pb-16 px-4 md:px-6 bg-white/50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12 md:mb-16">
-            <div className="flex justify-center mb-8">
-              <motion.button 
-                animate={{ 
-                  y: [0, -6, 0],
-                  boxShadow: [
-                    "0px 4px 20px rgba(0,0,0,0.05)", 
-                    "0px 12px 25px rgba(236,72,153,0.15)", 
-                    "0px 4px 20px rgba(0,0,0,0.05)"
-                  ]
-                }}
-                transition={{ 
-                  duration: 4, 
-                  repeat: Infinity, 
-                  ease: "easeInOut" 
-                }}
-                className="relative group p-[1.5px] rounded-full overflow-hidden flex items-center justify-center cursor-default"
-              >
-                {/* Spinning Gradient Border */}
-                <div className="absolute w-[400%] h-[400%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_200deg,#ec4899_280deg,#8b5cf6_360deg)] opacity-70 group-hover:opacity-100 transition-opacity duration-500"></div>
-                
-                {/* Inner White Pill */}
-                <div className="relative bg-white px-6 md:px-8 py-3 md:py-3.5 rounded-full flex items-center justify-center gap-1.5 w-full h-full">
-                  <span className="text-[10px] md:text-xs font-bold tracking-[0.2em] text-slate-500">
-                    TRY <span className="text-pink-500">INTERACTIVE</span> DEMO
-                  </span>
-                </div>
-              </motion.button>
-            </div>
-            <p className="text-gray-500 mb-6 px-4">Experience the dopamine hit of a completed task.</p>
-            <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-900 px-5 py-2.5 rounded-full font-bold text-xs md:text-sm shadow-sm animate-bounce">
-              <span>👇</span> Click the checkboxes below!
+          <div className="text-center mb-12 md:mb-16 flex flex-col items-center">
+            <h2 className="text-4xl md:text-[44px] font-serif text-[#1e293b] mb-3 tracking-tight">Try it yourself</h2>
+            <p className="text-[#64748b] text-lg md:text-xl mb-8 max-w-md mx-auto">
+              Experience the dopamine hit of a completed task.
+            </p>
+            <div className="inline-flex items-center gap-2 bg-[#f4ebff] text-[#581c87] px-5 py-2 rounded-full font-bold text-sm shadow-[0_4px_20px_rgba(88,28,135,0.08)]">
+              <span className="text-base">👇</span> Click the checkboxes below!
             </div>
           </div>
           
           <div id="demo" className="relative">
-            <div className="md:hidden absolute -top-8 right-0 flex items-center gap-1 text-[10px] font-bold text-purple-400 animate-pulse">
-              Swipe to explore <Plus size={12} />
+            <div className="md:hidden absolute -top-8 right-2 flex items-center gap-1 text-xs font-bold text-[#d8b4fe] animate-pulse">
+              Swipe to explore <Plus size={14} />
             </div>
             <LazyLoad>
               <Suspense fallback={

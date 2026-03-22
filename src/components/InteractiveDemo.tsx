@@ -373,22 +373,22 @@ export default function InteractiveDemo() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="md:hidden flex items-center justify-center gap-3 py-2 mb-2 bg-blue-50/50 border border-blue-100 rounded-lg"
+          className="md:hidden flex items-center justify-center gap-4 py-3 mb-4 bg-[#f8fafc] border border-blue-100 rounded-xl mx-2 mt-2"
         >
           <motion.div
             animate={{ x: [-4, 4, -4] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           >
-            <MoveHorizontal size={14} className="text-blue-600" />
+            <MoveHorizontal size={16} className="text-blue-600" />
           </motion.div>
-          <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-blue-700">
+          <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-blue-700">
             Swipe to explore dashboard
           </span>
           <motion.div
             animate={{ x: [4, -4, 4] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           >
-            <MoveHorizontal size={14} className="text-blue-600" />
+            <MoveHorizontal size={16} className="text-blue-600" />
           </motion.div>
         </motion.div>
       )}
