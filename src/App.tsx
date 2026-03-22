@@ -235,6 +235,23 @@ export default function App() {
       <header className="pt-32 md:pt-44 pb-10 md:pb-12 px-0 md:px-6 flex flex-col items-center w-full overflow-hidden">
         <div className="px-6 md:px-0 flex flex-col items-center w-full">
           
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex justify-center mb-5"
+          >
+            <div className="inline-flex items-center gap-2 bg-white px-4 py-1.5 rounded-full border border-slate-100 shadow-[0_2px_10px_rgba(0,0,0,0.04)]">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-pink-500"></span>
+              </span>
+              <span className="text-[9px] font-extrabold uppercase tracking-[0.2em] text-slate-500">
+                SYSTEM <span className="text-pink-500">OVER</span> MOTIVATION
+              </span>
+            </div>
+          </motion.div>
+
           <h1 
             className="font-extrabold text-5xl sm:text-6xl md:text-[96px] text-center leading-[0.9] mb-6 tracking-tight text-gray-900 uppercase"
           >
