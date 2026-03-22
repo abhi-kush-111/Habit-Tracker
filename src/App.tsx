@@ -278,48 +278,69 @@ export default function App() {
           </div>
         </div>
 
-        {/* Social Proof Bar */}
-        <div className="flex justify-center mt-6 mb-10 px-4">
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5 text-sm">
-            
-            {/* Avatars & Text */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center shrink-0">
-                {[
-                  "https://images.unsplash.com/photo-1507152832244-10d45c7eda57?q=80&w=64&h=64&auto=format&fit=crop", // Indian man
-                  "https://images.unsplash.com/photo-1589317621382-0cbef7ffcc4c?q=80&w=64&h=64&auto=format&fit=crop", // Indian woman
-                  "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=64&h=64&auto=format&fit=crop", // Indian man
-                  "https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?q=80&w=64&h=64&auto=format&fit=crop", // Indian woman
-                  "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=64&h=64&auto=format&fit=crop"  // Indian man
-                ].map((url, i) => (
-                  <img
-                    key={i}
-                    src={url}
-                    alt="Indian User"
-                    className={`w-8 h-8 md:w-9 md:h-9 rounded-full border-2 border-[#FAF9F6] object-cover shadow-sm ${i > 0 ? '-ml-3' : ''}`}
-                    referrerPolicy="no-referrer"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                ))}
+        {/* Social Proof Card & Features */}
+        <div className="flex flex-col items-center mt-8 mb-12 px-4 w-full">
+          {/* White Card */}
+          <div className="bg-white px-8 py-5 sm:px-10 sm:py-6 rounded-2xl shadow-xl max-w-fit mx-auto">
+            <div className="flex flex-col items-center gap-4 sm:gap-5">
+              {/* Avatars & Text */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center shrink-0">
+                  {[
+                    "https://images.unsplash.com/photo-1507152832244-10d45c7eda57?q=80&w=64&h=64&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1589317621382-0cbef7ffcc4c?q=80&w=64&h=64&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=64&h=64&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?q=80&w=64&h=64&auto=format&fit=crop",
+                    "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=64&h=64&auto=format&fit=crop"
+                  ].map((url, i) => (
+                    <img
+                      key={i}
+                      src={url}
+                      alt="User"
+                      className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-white object-cover ${i > 0 ? '-ml-2.5 sm:-ml-3' : ''}`}
+                      referrerPolicy="no-referrer"
+                      loading="lazy"
+                    />
+                  ))}
+                </div>
+                <div className="flex flex-col text-left whitespace-nowrap">
+                  <span className="font-bold text-[16px] sm:text-[18px] text-[#1A1A1A] leading-tight">1,384+ people</span>
+                  <span className="text-[13px] sm:text-[14px] text-[#666666] leading-tight">building consistency</span>
+                </div>
               </div>
-              <div className="flex items-baseline gap-1.5">
-                <span className="font-poppins font-bold text-[14px] md:text-[15px] text-[#1A1A1A]">1,384+</span>
-                <span className="font-poppins text-[13px] md:text-[14px] text-[#666666]">building consistency</span>
+              
+              {/* Divider */}
+              <div className="w-full h-px bg-[#DDDDDD]"></div>
+              
+              {/* Rating */}
+              <div className="flex items-center gap-3">
+                <div className="flex gap-0.5 text-[#E8855A] text-[14px] leading-none">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i}>⭐</span>
+                  ))}
+                </div>
+                <span className="text-[14px] text-[#666666] whitespace-nowrap leading-none">4.9/5 rating</span>
               </div>
             </div>
+          </div>
 
-            {/* Subtle Dot Divider */}
-            <div className="hidden sm:block w-1 h-1 rounded-full bg-slate-300"></div>
-
-            {/* Stars & Rating */}
-            <div className="flex items-center gap-2">
-              <div className="flex gap-0.5">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={16} className="text-amber-400 fill-amber-400" />
-                ))}
-              </div>
-              <span className="font-poppins font-medium text-[13px] md:text-[14px] text-[#666666]">4.9/5</span>
+          {/* Feature List */}
+          <div className="mt-8 grid grid-cols-2 gap-x-4 sm:gap-x-12 gap-y-5 text-[10px] sm:text-[12px] font-bold text-[#1A2B4C] uppercase tracking-wider mx-auto max-w-fit">
+            <div className="flex items-center gap-3 justify-start">
+              <svg className="w-[18px] h-[18px] text-[#FBA81C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              ONE-TIME PURCHASE
+            </div>
+            <div className="flex items-center gap-3 justify-start">
+              <svg className="w-[18px] h-[18px] text-[#FBA81C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              NO SUBSCRIPTIONS
+            </div>
+            <div className="flex items-center gap-3 justify-start">
+              <svg className="w-[18px] h-[18px] text-[#FBA81C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              EDITABLE ANYTIME
+            </div>
+            <div className="flex items-center gap-3 justify-start">
+              <svg className="w-[18px] h-[18px] text-[#FBA81C]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              LIFETIME ACCESS
             </div>
           </div>
         </div>
@@ -341,7 +362,7 @@ export default function App() {
               ease: "easeInOut" 
             }}
             onClick={() => navigate('/user-details')} 
-            className="group relative w-fit px-6 py-2 rounded-full font-bold text-sm bg-[#480d4c] text-white shadow-[0_10px_20px_rgba(72,13,76,0.1)] hover:shadow-[0_15px_30px_rgba(72,13,76,0.2)] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex items-center justify-center gap-2 z-10"
+            className="group relative w-fit px-6 py-3.5 rounded-full font-bold text-sm bg-[#480d4c] text-white shadow-[0_10px_20px_rgba(72,13,76,0.1)] hover:shadow-[0_15px_30px_rgba(72,13,76,0.2)] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex items-center justify-center gap-2 z-10"
             style={{ transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}
           >
             {/* Shimmer Effect */}
@@ -352,21 +373,14 @@ export default function App() {
             </span>
           </motion.button>
 
-          {/* Price Warning Pill */}
-          <div className="mt-5 mb-6 inline-flex items-center gap-2 bg-pink-50/80 border border-pink-100 px-4 py-1.5 rounded-full shadow-sm">
-            <Clock size={16} className="text-pink-500" />
-            <span className="text-[13px] font-black italic text-[#e11d48] uppercase tracking-tight">
-              Price goes back to ₹99 soon
+          {/* Price Warning Text */}
+          <div className="mt-5 mb-6 inline-flex items-center gap-2">
+            <Clock size={16} className="text-[#e11d48]" strokeWidth={2.5} />
+            <span className="text-[14px] font-black italic text-[#e11d48] uppercase tracking-tight">
+              PRICE GOES BACK TO ₹99 SOON
             </span>
           </div>
 
-          {/* Checkmarks */}
-          <div className="flex flex-wrap justify-center gap-x-5 sm:gap-x-8 gap-y-3 w-full max-w-[500px] text-[12px] font-medium text-slate-600">
-            <div className="flex items-center gap-1.5"><CheckCircle size={14} className="text-emerald-500 shrink-0" /> One-time purchase</div>
-            <div className="flex items-center gap-1.5"><CheckCircle size={14} className="text-emerald-500 shrink-0" /> No subscriptions</div>
-            <div className="flex items-center gap-1.5"><CheckCircle size={14} className="text-emerald-500 shrink-0" /> Editable anytime</div>
-            <div className="flex items-center gap-1.5"><CheckCircle size={14} className="text-emerald-500 shrink-0" /> Lifetime access</div>
-          </div>
         </motion.div>
       </header>
 
