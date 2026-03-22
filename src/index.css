@@ -14,7 +14,7 @@
     from { transform: translateX(-100%) skewX(-20deg); }
     to { transform: translateX(200%) skewX(-20deg); }
   }
-  --animate-shimmer: shimmer 2s infinite;
+  --animate-shimmer: shimmer 1.5s infinite;
 }
 
 html {
@@ -86,11 +86,4 @@ body {
   transform: translate(-50%, -50%);
   font-size: 14px;
   font-weight: bold;
-}
-
-/* Custom Animations */
-@keyframes shimmer {
-  100% {
-    transform: translateX(100%);
-  }
 }

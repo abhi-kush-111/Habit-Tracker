@@ -1,6 +1,6 @@
 import React, { useState, useEffect, lazy, Suspense, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, X, ChevronLeft, ChevronRight, CheckCircle, Quote, Lock, ShieldCheck, Star, ArrowRight, ArrowLeft } from 'lucide-react';
+import { Plus, X, ChevronLeft, ChevronRight, CheckCircle, Quote, Lock, ShieldCheck, Star, ArrowRight, ArrowLeft, Clock } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 declare global {
@@ -234,47 +234,6 @@ export default function App() {
 
       <header className="pt-32 md:pt-44 pb-10 md:pb-12 px-0 md:px-6 flex flex-col items-center w-full overflow-hidden">
         <div className="px-6 md:px-0 flex flex-col items-center w-full">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-8 md:mb-10"
-          >
-            <motion.button 
-              animate={{ 
-                y: [0, -6, 0],
-                boxShadow: [
-                  "0px 4px 20px rgba(0,0,0,0.05)", 
-                  "0px 12px 25px rgba(236,72,153,0.15)", 
-                  "0px 4px 20px rgba(0,0,0,0.05)"
-                ]
-              }}
-              transition={{ 
-                duration: 4, 
-                repeat: Infinity, 
-                ease: "easeInOut" 
-              }}
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  window.dataLayer = window.dataLayer || [];
-                  window.dataLayer.push({ event: 'try_demo_clicked' });
-                }
-                document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="relative group p-[1.5px] rounded-full overflow-hidden flex items-center justify-center cursor-pointer"
-            >
-              {/* Spinning Gradient Border */}
-              <div className="absolute w-[400%] h-[400%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_200deg,#ec4899_280deg,#8b5cf6_360deg)] opacity-70 group-hover:opacity-100 transition-opacity duration-500"></div>
-              
-              {/* Inner White Pill */}
-              <div className="relative bg-white px-6 md:px-8 py-3 md:py-3.5 rounded-full flex items-center justify-center gap-1.5 w-full h-full">
-                <span className="text-[10px] md:text-xs font-bold tracking-[0.2em] text-slate-500">
-                  TRY <span className="text-pink-500">INTERACTIVE</span> DEMO
-                </span>
-                <span className="text-pink-500 ml-1 group-hover:translate-y-0.5 transition-transform duration-300">↓</span>
-              </div>
-            </motion.button>
-          </motion.div>
           
           <h1 
             className="font-extrabold text-5xl sm:text-6xl md:text-[96px] text-center leading-[0.9] mb-6 tracking-tight text-gray-900 uppercase"
@@ -372,28 +331,33 @@ export default function App() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="w-full flex flex-col items-center mb-6 px-4"
         >
-          <button 
+          <motion.button 
+            animate={{ 
+              y: [0, -6, 0],
+            }}
+            transition={{ 
+              duration: 2, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
             onClick={() => navigate('/user-details')} 
-            className="group relative inline-flex items-center justify-center gap-1 sm:gap-1.5 bg-gradient-to-b from-white to-purple-50/50 text-slate-800 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full font-bold text-sm sm:text-base shadow-[0_6px_20px_rgba(149,76,233,0.15)] border border-purple-200 hover:shadow-[0_8px_25px_rgba(149,76,233,0.2)] hover:border-purple-300 hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-[0_2px_10px_rgba(149,76,233,0.15)] transition-all duration-300"
+            className="group relative w-fit px-6 py-2 rounded-full font-bold text-sm bg-[#480d4c] text-white shadow-[0_10px_20px_rgba(72,13,76,0.1)] hover:shadow-[0_15px_30px_rgba(72,13,76,0.2)] hover:-translate-y-0.5 transition-all duration-300 overflow-hidden flex items-center justify-center gap-2 z-10"
+            style={{ transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)' }}
           >
-            <span className="whitespace-nowrap z-10">⚡ Get Instant Access</span>
+            {/* Shimmer Effect */}
+            <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
             
-            <div className="w-[1px] h-4 bg-slate-200 z-10 ml-0.5"></div>
-            
-            <div className="flex items-center gap-1 z-10">
-              <span className="text-purple-700 font-extrabold text-base sm:text-lg">₹49</span>
-              <span className="line-through text-slate-400 text-xs font-medium">₹99</span>
-            </div>
+            <span className="whitespace-nowrap z-10 flex items-center gap-1.5">
+              <span>⚡</span> Get Instant Access — ₹49 Only <span className="line-through text-white/30 text-xs font-medium ml-1">₹99</span>
+            </span>
+          </motion.button>
 
-            <div className="bg-emerald-50 text-emerald-600 text-[10px] sm:text-[11px] font-extrabold px-1.5 py-0.5 rounded-full tracking-wide z-10 border border-emerald-100 ml-0.5">
-              SAVE 50%
-            </div>
-          </button>
-
-          {/* Micro-copy */}
-          <div className="mt-5 mb-6 flex items-center justify-center gap-1.5 text-[12px] text-slate-500 font-medium">
-            <Lock size={12} className="text-slate-400" />
-            <span>Secure 1-click checkout via Razorpay</span>
+          {/* Price Warning Pill */}
+          <div className="mt-5 mb-6 inline-flex items-center gap-2 bg-pink-50/80 border border-pink-100 px-4 py-1.5 rounded-full shadow-sm">
+            <Clock size={16} className="text-pink-500" />
+            <span className="text-[13px] font-black italic text-[#e11d48] uppercase tracking-tight">
+              Price goes back to ₹99 soon
+            </span>
           </div>
 
           {/* Checkmarks */}
@@ -409,7 +373,34 @@ export default function App() {
       <section className="pt-4 pb-10 md:pt-6 md:pb-16 px-4 md:px-6 bg-white/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
-            <h2 className="font-serif text-4xl md:text-5xl mb-4">Try it yourself</h2>
+            <div className="flex justify-center mb-8">
+              <motion.button 
+                animate={{ 
+                  y: [0, -6, 0],
+                  boxShadow: [
+                    "0px 4px 20px rgba(0,0,0,0.05)", 
+                    "0px 12px 25px rgba(236,72,153,0.15)", 
+                    "0px 4px 20px rgba(0,0,0,0.05)"
+                  ]
+                }}
+                transition={{ 
+                  duration: 4, 
+                  repeat: Infinity, 
+                  ease: "easeInOut" 
+                }}
+                className="relative group p-[1.5px] rounded-full overflow-hidden flex items-center justify-center cursor-default"
+              >
+                {/* Spinning Gradient Border */}
+                <div className="absolute w-[400%] h-[400%] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-[spin_4s_linear_infinite] bg-[conic-gradient(from_0deg,transparent_0_200deg,#ec4899_280deg,#8b5cf6_360deg)] opacity-70 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                {/* Inner White Pill */}
+                <div className="relative bg-white px-6 md:px-8 py-3 md:py-3.5 rounded-full flex items-center justify-center gap-1.5 w-full h-full">
+                  <span className="text-[10px] md:text-xs font-bold tracking-[0.2em] text-slate-500">
+                    TRY <span className="text-pink-500">INTERACTIVE</span> DEMO
+                  </span>
+                </div>
+              </motion.button>
+            </div>
             <p className="text-gray-500 mb-6 px-4">Experience the dopamine hit of a completed task.</p>
             <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-900 px-5 py-2.5 rounded-full font-bold text-xs md:text-sm shadow-sm animate-bounce">
               <span>👇</span> Click the checkboxes below!
