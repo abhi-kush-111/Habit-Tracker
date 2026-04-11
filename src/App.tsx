@@ -130,7 +130,7 @@ export default function App() {
 
     const options = {
       key: 'rzp_live_SPRufu2D9yjTyr',
-      amount: 499, // amount in cents (4.99 USD)
+      amount: 100, // amount in cents (1 USD)
       currency: 'USD',
       name: 'Habit Tracker',
       description: 'Ultimate Habit Tracker',
@@ -219,7 +219,7 @@ export default function App() {
         <div className="flex items-center justify-center whitespace-nowrap">
           <span>⚡ 24-Hour Sale Live Now —</span>
           <span className="line-through opacity-80 mx-1.5">$10</span>
-          <span className="font-extrabold text-[18px] sm:text-[20px] mx-1.5">$4.99</span>
+          <span className="font-extrabold text-[18px] sm:text-[20px] mx-1.5">$1</span>
           <span className="hidden sm:inline">Grab it before it's gone!</span>
           <span className="ml-2 sm:ml-3 font-mono font-bold bg-black/20 px-2 py-0.5 rounded tracking-wider">{formatTime(timeLeft)}</span>
         </div>
@@ -386,7 +386,7 @@ export default function App() {
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
             
             <span className="whitespace-nowrap z-10 flex items-center gap-1.5">
-              <span>⚡</span> Get Instant Access — $4.99 Only <span className="line-through text-white/30 text-xs font-medium ml-1">$10</span>
+              <span>⚡</span> Get Instant Access — $1 Only <span className="line-through text-white/30 text-xs font-medium ml-1">$10</span>
             </span>
           </motion.button>
 
@@ -466,7 +466,7 @@ export default function App() {
               <span>⚡ Get Instant Access</span>
               <span className="text-white/50 font-normal">|</span>
               <div className="flex items-center gap-1.5">
-                <span>$4.99</span>
+                <span>$1</span>
                 <span className="line-through text-white/50 text-xs font-medium">$10</span>
               </div>
             </div>
@@ -690,7 +690,7 @@ export default function App() {
               <span className="whitespace-nowrap">⚡ Get Instant Access</span>
               <span className="text-white/40 font-normal">|</span>
               <div className="flex items-center gap-1.5">
-                <span>$4.99</span>
+                <span>$1</span>
                 <span className="line-through text-white/60 text-xs font-medium">$10</span>
               </div>
             </div>
@@ -914,7 +914,7 @@ export default function App() {
                     <span className="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-md uppercase tracking-wider">SAVE 50%</span>
                   </div>
                   <div className="text-2xl font-extrabold text-gray-900 leading-none tracking-tight">
-                    $4<span className="text-sm text-gray-500 font-medium">.99</span>
+                    $1<span className="text-sm text-gray-500 font-medium">.00</span>
                   </div>
                 </div>
                 <button
