@@ -130,8 +130,8 @@ export default function App() {
 
     const options = {
       key: 'rzp_live_SPRufu2D9yjTyr',
-      amount: 4900, // amount in paise (49 INR)
-      currency: 'INR',
+      amount: 499, // amount in cents (4.99 USD)
+      currency: 'USD',
       name: 'Habit Tracker',
       description: 'Ultimate Habit Tracker',
       image: '/hero.webp',
@@ -142,7 +142,7 @@ export default function App() {
           event: 'purchase_success',
           ecommerce: {
             currency: options.currency,
-            value: options.amount / 100 // Convert paise back to INR
+            value: options.amount / 100 // Convert cents back to USD
           }
         });
         (window as any).dataLayer = dataLayer;
@@ -218,8 +218,8 @@ export default function App() {
       <div className="fixed top-0 w-full z-[60] h-[48px] bg-red-600 text-white flex items-center justify-center text-[12px] sm:text-[14px] px-2 md:px-4 font-medium shadow-md overflow-hidden">
         <div className="flex items-center justify-center whitespace-nowrap">
           <span>⚡ 24-Hour Sale Live Now —</span>
-          <span className="line-through opacity-80 mx-1.5">₹199</span>
-          <span className="font-extrabold text-[18px] sm:text-[20px] mx-1.5">₹99</span>
+          <span className="line-through opacity-80 mx-1.5">$10</span>
+          <span className="font-extrabold text-[18px] sm:text-[20px] mx-1.5">$4.99</span>
           <span className="hidden sm:inline">Grab it before it's gone!</span>
           <span className="ml-2 sm:ml-3 font-mono font-bold bg-black/20 px-2 py-0.5 rounded tracking-wider">{formatTime(timeLeft)}</span>
         </div>
@@ -386,7 +386,7 @@ export default function App() {
             <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
             
             <span className="whitespace-nowrap z-10 flex items-center gap-1.5">
-              <span>⚡</span> Get Instant Access — ₹99 Only <span className="line-through text-white/30 text-xs font-medium ml-1">₹199</span>
+              <span>⚡</span> Get Instant Access — $4.99 Only <span className="line-through text-white/30 text-xs font-medium ml-1">$10</span>
             </span>
           </motion.button>
 
@@ -394,7 +394,7 @@ export default function App() {
           <div className="mt-5 mb-6 inline-flex items-center gap-2">
             <Clock size={16} className="text-[#e11d48]" strokeWidth={2.5} />
             <span className="text-[14px] font-black italic text-[#e11d48] uppercase tracking-tight">
-              PRICE GOES BACK TO ₹199 SOON
+              PRICE GOES BACK TO $10 SOON
             </span>
           </div>
 
@@ -466,8 +466,8 @@ export default function App() {
               <span>⚡ Get Instant Access</span>
               <span className="text-white/50 font-normal">|</span>
               <div className="flex items-center gap-1.5">
-                <span>₹99</span>
-                <span className="line-through text-white/50 text-xs font-medium">₹199</span>
+                <span>$4.99</span>
+                <span className="line-through text-white/50 text-xs font-medium">$10</span>
               </div>
             </div>
           </button>
@@ -690,8 +690,8 @@ export default function App() {
               <span className="whitespace-nowrap">⚡ Get Instant Access</span>
               <span className="text-white/40 font-normal">|</span>
               <div className="flex items-center gap-1.5">
-                <span>₹99</span>
-                <span className="line-through text-white/60 text-xs font-medium">₹199</span>
+                <span>$4.99</span>
+                <span className="line-through text-white/60 text-xs font-medium">$10</span>
               </div>
             </div>
           </button>
@@ -910,11 +910,11 @@ export default function App() {
               <div className="p-4 sm:p-5 border-t border-gray-200 bg-white flex justify-between items-center mt-auto">
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm text-gray-400 line-through font-medium">₹199</span>
+                    <span className="text-sm text-gray-400 line-through font-medium">$10</span>
                     <span className="text-[10px] font-bold bg-green-100 text-green-700 px-1.5 py-0.5 rounded-md uppercase tracking-wider">SAVE 50%</span>
                   </div>
                   <div className="text-2xl font-extrabold text-gray-900 leading-none tracking-tight">
-                    ₹99<span className="text-sm text-gray-500 font-medium">.00</span>
+                    $4<span className="text-sm text-gray-500 font-medium">.99</span>
                   </div>
                 </div>
                 <button
